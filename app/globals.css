@@ -8,13 +8,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-noto: var(--font-noto);
+  --font-caprasimo: var(--font-caprasimo);
+  --color-fern-green: #5a7638;
+  --color-puce: #CE7B91;
+  --color-raisin-black: #1E1E1E;
+  --color-rosa-pastel: #FFD4D4;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #ffffff;
     --foreground: #ededed;
   }
 }
@@ -22,5 +26,21 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-noto), sans-serif;
+}
+
+/* Para esconder scroll*/
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari */
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE 10+ */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Para mostrar texto de costado */
+.sideways-heading {
+  writing-mode: vertical-lr;
+  /* You might also need text-orientation for specific character rotations */
+  text-orientation: upright;
 }

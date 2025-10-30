@@ -1,18 +1,7 @@
 import Navbar from "../components/Navbar";
-import { redirect } from "next/navigation";
-import { createClient } from "@/utils/SupabaseServer";
 import Botones from "./components/botones";
 
 export default async function Admin() {
-  const supabase = await createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    redirect("/login"); // Redirige si no hay sesión
-  }
-
   return (
     <>
       <div>

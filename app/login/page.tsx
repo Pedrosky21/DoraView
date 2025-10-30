@@ -1,44 +1,34 @@
 "use client";
 
-import loginAction from "@/utils/login";
 import Navbar from "../components/Navbar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/SupabaseClient";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorLogin, setErrorLogin] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async () => {
-    if (!email || !password) return;
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    setErrorLogin(false);
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
-    console.log(data);
 
-    if (error) {
-      setErrorLogin(true);
-      return;
+    if (res.ok) {
+      router.push("/admin"); // redirigir si todo va bien
+    } else {
+      const { error } = await res.json();
+      setErrorLogin(error);
     }
-
-    // Redirigir después del login exitoso
-    router.push("/admin");
   };
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        router.push("/admin");
-      }
-    };
-    checkSession();
-  }, []);
+  if (loading)
+    return <div className="w-full h-full animate-spin text-pink-500"></div>;
 
   return (
     <>

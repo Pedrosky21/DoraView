@@ -1,3 +1,5 @@
+import Genero from "@/types/Genero";
+import Tag from "@/types/Tag";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -5,9 +7,10 @@ interface DoramaModal {
   id: number;
   titulo: string;
   imagen_url: string;
-  generos: string[];
-  tags: string[];
+  generos: Genero[] | undefined;
+  tags: Tag[] | undefined;
   calificacion: number;
+  onClose: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function DoramaModal({
@@ -17,13 +20,14 @@ export default function DoramaModal({
   generos,
   tags,
   calificacion,
+  onClose,
 }: DoramaModal) {
   return (
     <>
-      <div className="flex flex-col justify-center px-2 py-3 w-4/5 bg-fern-green shadow-black shadow-2xl rounded-xl">
+      <div className="flex flex-col justify-center px-2 py-3 w-4/5 bg-white/70 shadow-black shadow-2xl rounded-xl">
         <div className="flex justify-between w-full mb-2">
-          <h2>Info del dorama</h2>
-          <button>
+          <h2 className="text-black">Info del dorama</h2>
+          <button onClick={onClose}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -46,7 +50,10 @@ export default function DoramaModal({
             loading="eager"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             alt={titulo}
-            src={imagen_url}
+            src={
+              imagen_url ||
+              "https://i.pinimg.com/736x/41/9b/00/419b00573488b64b568be4e770bbf21f.jpg"
+            }
             quality={100}
             className="rounded-t-xl object-cover"
           ></Image>
@@ -74,21 +81,24 @@ export default function DoramaModal({
             <div className="bg-black/60 backdrop-blur-sm rounded-t-xl p-2">
               <h2 className="font-caprasimo text-2xl">{titulo}</h2>
               <div className="flex space-x-2 w-full overflow-scroll scrollbar-hide">
-                {generos.map((gen, i) => (
+                {generos?.map((gen, i) => (
                   <div key={i} className="bg-puce rounded-xl px-2 py-1">
-                    <p>{gen}</p>
+                    <p>{gen.nombre}</p>
                   </div>
                 ))}
               </div>
               <div className="mt-2 flex space-x-2 w-full overflow-hidden">
-                {tags.map((gen, i) => (
+                {tags?.map((gen, i) => (
                   <div key={i} className="bg-puce rounded-xl px-2 py-1">
-                    <p className="text-sm">{gen}</p>
+                    <p className="text-sm">{gen.nombre}</p>
                   </div>
                 ))}
               </div>
               <div className="flex w-full justify-end">
-                <Link href={`/dorama-info/${id}`} className="rounded-xl border border-black bg-fern-green py-1 px-2 hover:bg-lime-900">
+                <Link
+                  href={`/dorama-info/${id}`}
+                  className="rounded-xl border border-black bg-fern-green py-1 px-2 hover:bg-lime-900"
+                >
                   Más info...
                 </Link>
               </div>

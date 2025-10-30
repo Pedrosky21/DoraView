@@ -1,16 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DoramaCarrousel from "./components/doramas/DoramaCarrousel";
 import Navbar from "./components/Navbar";
 import DoramaModal from "./components/doramas/DoramaModal";
+import Dorama from "@/types/Dorama";
 
 export default function Home() {
+  const [doramaMostrar, setDoramaMostrar] = useState<Dorama>({
+    titulo: "Titulo",
+    sinopsis: "Sinopsis",
+    id: 0,
+    review: "Review",
+    imagen_url: "",
+    calificacion: 1,
+  });
   const [showDoramaModal, setShowDoramaModal] = useState<boolean>(false);
+  const [mejoresDoramas, setMejoresDoramas] = useState<Dorama[]>([]);
+  const [loadingMejores, setLoadingMejores] = useState<boolean>(true);
+  const [romanceDoramas, setRomanceDoramas] = useState<Dorama[]>([]);
+  const [loadingRomance, setLoadingRomance] = useState<boolean>(true);
 
-  const clickDorama = () => {
-    setShowDoramaModal(true)
-  }
+  useEffect(() => {
+    const loadMejores = async () => {
+      try {
+        const res = await fetch("/api/doramas?calificacion=5");
+        const data = await res.json();
+        setMejoresDoramas(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const loadRomance = async () => {
+      try {
+        const res = await fetch("/api/doramas?genero=23");
+        const data = await res.json();
+        setRomanceDoramas(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadMejores();
+    loadRomance();
+  }, []);
+
+  const clickDorama = (dorama:Dorama) => {
+    setDoramaMostrar(dorama);
+    setShowDoramaModal(true);
+  };
+
+  const clickClose = () => {
+    setShowDoramaModal(false);
+  };
 
   return (
     <>
@@ -28,62 +70,28 @@ export default function Home() {
           <DoramaCarrousel
             titulo="Mejor calificación"
             onClickDorama={clickDorama}
-            doramas={[
-              {
-                id: 1,
-                titulo: "titulo largo como para que se vea",
-                calificacion: 5,
-                sinopsis: "",
-                review: "",
-                imagen_url:
-                  "https://i.pinimg.com/736x/41/9b/00/419b00573488b64b568be4e770bbf21f.jpg",
-              },
-              {
-                id: 2,
-                titulo: "Titulo largo como para que se vea",
-                calificacion: 4,
-                sinopsis: "",
-                review: "",
-                imagen_url:
-                  "https://i.pinimg.com/736x/41/9b/00/419b00573488b64b568be4e770bbf21f.jpg",
-              },
-              {
-                id: 3,
-                titulo: "Titulo largo como para que se vea",
-                calificacion: 1,
-                sinopsis: "",
-                review: "",
-                imagen_url:
-                  "https://i.pinimg.com/736x/41/9b/00/419b00573488b64b568be4e770bbf21f.jpg",
-              },
-            ]}
+            doramas={mejoresDoramas}
           ></DoramaCarrousel>
           <DoramaCarrousel
             titulo="Romance"
             onClickDorama={clickDorama}
-            doramas={[
-              {
-                id: 1,
-                titulo: "titulo",
-                calificacion: 5,
-                sinopsis: "",
-                review: "",
-                imagen_url:
-                  "https://i.pinimg.com/736x/41/9b/00/419b00573488b64b568be4e770bbf21f.jpg",
-              },
-            ]}
+            doramas={romanceDoramas}
           ></DoramaCarrousel>
         </div>
-        <div className={`fixed backdrop-blur-sm flex items-center justify-center z-10 inset-0 ${showDoramaModal? "block" : "hidden"}`}>
+        <div
+          className={`fixed backdrop-blur-sm flex items-center justify-center z-10 inset-0 ${
+            showDoramaModal ? "block" : "hidden"
+          }`}
+        >
           <DoramaModal
-            id={1}
-            titulo="Titulo"
-            imagen_url="https://i.pinimg.com/736x/41/9b/00/419b00573488b64b568be4e770bbf21f.jpg"
-            calificacion={5}
-            generos={["genero1", "genero2", "genero3", "genero4"]}
-            tags={["tag 1", "tag 2"]}
-          >
-          </DoramaModal>
+            id={doramaMostrar.id}
+            titulo={doramaMostrar.titulo}
+            imagen_url={doramaMostrar.imagen_url}
+            calificacion={doramaMostrar.calificacion}
+            generos={doramaMostrar.generos}
+            tags={doramaMostrar.tags}
+            onClose={clickClose}
+          ></DoramaModal>
         </div>
       </div>
     </>

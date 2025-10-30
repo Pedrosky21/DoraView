@@ -1,10 +1,10 @@
 import Image from "next/image";
-import Dorama from "../../types/Dorama";
+import Dorama from "../../../types/Dorama";
 
 interface DoramaCarrousel {
   titulo: string;
   doramas: Dorama[];
-  onClickDorama: (event: React.MouseEvent<HTMLLIElement>) => void;
+  onClickDorama: (dorama:Dorama) => (void);
 }
 
 export default function DoramaCarrousel({ titulo, doramas, onClickDorama }: DoramaCarrousel) {
@@ -17,7 +17,7 @@ export default function DoramaCarrousel({ titulo, doramas, onClickDorama }: Dora
         <ul className="flex space-x-6 py-2 text-black overflow-auto scroll-smooth snap-x scrollbar-hide">
           {doramas.map((dorama, i) => (
             <li
-              onClick={onClickDorama}
+              onClick={() => onClickDorama(dorama)}
               className="shrink-0 flex flex-col justify-center overflow-auto w-30 transition-transform duration-300 ease-in-out transform hover:scale-105 active:scale:105"
               key={i}
             >

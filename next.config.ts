@@ -1,11 +1,22 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
   images: {
-    remotePatterns: [new URL("https://i.pinimg.com/**")],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "xkaggjpiilquvsgqvrmw.supabase.co", // sin ".storage"
+        pathname: "/storage/v1/object/public/doramas-imagenes/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+        pathname: "/**",
+      },
+    ],
     qualities: [100, 75]
-  }
+  },
 };
 
 export default nextConfig;
